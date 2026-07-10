@@ -1,0 +1,44 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Shell script syntax
+        run: |
+          shopt -s nullglob
+          for script in *.sh; do
+            echo "Checking ${script}..."
+            bash -n "${script}"
+          done
+
+      - name: Validate opencode.json
+        run: python3 -m json.tool opencode.json > /dev/null
+
+      - name: Validate Modelfiles exist
+        run: |
+          test -f Modelfile.qwen3-coder
+          test -f Modelfile.qwen3
+          test -f Modelfile.qwen2.5-coder-14b
+          test -f Modelfile.llama
+
+      - name: Validate docker compose files
+        run: |
+          docker compose -f docker-compose.yml config --quiet
+          docker compose -f docker-compose.yml -f docker-compose.gpu.yml config --quiet

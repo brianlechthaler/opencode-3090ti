@@ -1,0 +1,33 @@
+# This project orchestrates the upstream ollama/ollama image via docker-compose.
+# There is no Dockerfile or custom image to build and publish to GHCR.
+# This workflow validates compose configuration only.
+name: Container
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: container-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate-compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate docker compose configuration
+        run: |
+          docker compose -f docker-compose.yml config --quiet
+          docker compose -f docker-compose.yml -f docker-compose.gpu.yml config --quiet
+
+      - name: Confirm upstream image reference
+        run: |
+          grep -q 'image: ollama/ollama:latest' docker-compose.yml

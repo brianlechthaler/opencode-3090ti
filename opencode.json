@@ -1,0 +1,52 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "enabled_providers": ["ollama"],
+  "model": "ollama/qwen3-coder-30b-opencode:latest",
+  "agent": {
+    "build": {
+      "prompt": "For long-running bash commands (docker build, docker compose build, cargo build, npm ci, test suites), always pass timeout: 600000. If a command times out, retry with timeout: 600000."
+    }
+  },
+  "permission": {
+    "external_directory": {
+      "~/scratch/**": "allow"
+    }
+  },
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (docker)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1",
+        "timeout": 600000,
+        "chunkTimeout": 120000
+      },
+      "models": {
+        "qwen3-coder-30b-opencode:latest": {
+          "name": "Qwen3 Coder 30B (native tool calling)",
+          "tools": true,
+          "limit": {
+            "context": 65536,
+            "output": 16384
+          }
+        },
+        "qwen3-8b-opencode:latest": {
+          "name": "Qwen3 8B (fallback)",
+          "tools": true,
+          "limit": {
+            "context": 65536,
+            "output": 16384
+          }
+        },
+        "llama3.2-opencode:latest": {
+          "name": "Llama 3.2 3B (fallback)",
+          "tools": true,
+          "limit": {
+            "context": 65536,
+            "output": 16384
+          }
+        }
+      }
+    }
+  }
+}

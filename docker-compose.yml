@@ -1,0 +1,23 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    gpus: all
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      # Offload every layer to GPU; fail rather than silently spilling to CPU.
+      OLLAMA_NUM_GPU: "999"
+      OLLAMA_FLASH_ATTENTION: "1"
+      # Keep partial downloads across restarts when pulls stall.
+      OLLAMA_NOPRUNE: "1"
+      # Reduce KV cache footprint so 30B weights + 64k context fit in 24GB.
+      OLLAMA_KV_CACHE_TYPE: "q8_0"
+      OLLAMA_CONTEXT_LENGTH: "65536"
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  ollama_data:

@@ -18,14 +18,21 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install lint dependencies
+        run: sudo apt-get update -qq && sudo apt-get install -y shellcheck python3-yaml
+      - name: Lint everything
+        run: bash scripts/lint-all.sh
+
   static:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Install ShellCheck and PyYAML
         run: sudo apt-get update -qq && sudo apt-get install -y shellcheck python3-yaml
-
       - name: Run static tests
         run: bash scripts/test-static.sh
 
@@ -33,7 +40,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Exercise ollama-version helper
         run: bash scripts/test-ollama-version.sh
 
@@ -41,21 +47,49 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Dry-run host updater
         run: bash scripts/test-update-dry.sh
+
+  scripts-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Smoke-test every user-facing script
+        run: bash scripts/test-scripts-smoke.sh
+
+  start-stack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exercise systemd start entrypoint
+        run: bash scripts/test-start-stack.sh
 
   ollama-startup:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-
       - name: Start pinned Ollama image and hit /api/tags
         run: bash scripts/test-ollama-startup.sh
 
+  coverage:
+    needs:
+      - lint
+      - static
+      - ollama-version
+      - update-dry
+      - scripts-smoke
+      - start-stack
+      - ollama-startup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enforce 100% file coverage inventory
+        run: bash scripts/test-coverage.sh
+
   automerge:
-    needs: [static, ollama-version, update-dry, ollama-startup]
+    needs: [coverage]
     if: >-
       github.event_name == 'pull_request' &&
       contains(github.event.pull_request.labels.*.name, 'automerge')

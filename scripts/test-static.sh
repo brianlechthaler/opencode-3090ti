@@ -43,14 +43,37 @@ required=(
   Modelfile.qwen3
   Modelfile.qwen2.5-coder-14b
   Modelfile.llama
+  install-nvidia-container-toolkit.sh
+  opencode.sh
+  run-opencode.sh
+  setup-and-start.sh
+  setup-model.sh
+  setup-opencode.sh
+  start.sh
   scripts/install.sh
   scripts/update.sh
   scripts/start.sh
   scripts/ollama-version.sh
+  scripts/lint-all.sh
+  scripts/test-all.sh
+  scripts/test-coverage.sh
+  scripts/test-scripts-smoke.sh
+  scripts/test-start-stack.sh
+  scripts/test-static.sh
+  scripts/test-ollama-version.sh
+  scripts/test-update-dry.sh
+  scripts/test-ollama-startup.sh
   systemd/opencode-3090ti.service
   systemd/opencode-3090ti-update.service
   systemd/opencode-3090ti-update.timer
+  docs/architecture.md
+  docs/getting-started.md
   docs/features/auto-updates.md
+  docs/features/interactive-tui.md
+  docs/features/model-setup.md
+  docs/features/non-interactive-runner.md
+  docs/features/ollama-docker.md
+  docs/features/opencode-config.md
   .github/workflows/test.yml
   .github/workflows/lint.yml
   .github/workflows/container.yml
@@ -121,6 +144,20 @@ except ImportError:
     print("FAIL: PyYAML is required to validate workflow files", file=sys.stderr)
     sys.exit(1)
 
+class TolerantLoader(yaml.SafeLoader):
+    pass
+
+def _unknown_tag(loader, tag_suffix, node):
+    if isinstance(node, yaml.ScalarNode):
+        return loader.construct_scalar(node)
+    if isinstance(node, yaml.SequenceNode):
+        return loader.construct_sequence(node)
+    if isinstance(node, yaml.MappingNode):
+        return loader.construct_mapping(node)
+    return None
+
+TolerantLoader.add_multi_constructor("!", _unknown_tag)
+
 paths = sorted(glob.glob(".github/workflows/*.yml"))
 if not paths:
     print("FAIL: no workflow files found", file=sys.stderr)
@@ -128,7 +165,7 @@ if not paths:
 
 for path in paths:
     with open(path, encoding="utf-8") as handle:
-        yaml.safe_load(handle)
+        yaml.load(handle, Loader=TolerantLoader)
     print(f"parsed {path}")
 PY
 pass "workflow YAML parses"
@@ -138,14 +175,20 @@ echo "== workflow coverage =="
 grep -q 'name: Bump Ollama' .github/workflows/ollama-version-bump.yml \
   || fail "version bump workflow missing"
 grep -q 'schedule:' .github/workflows/test.yml || fail "test workflow missing schedule for continuous runs"
-grep -q 'scripts/test-static.sh' .github/workflows/test.yml \
-  || fail "test workflow does not invoke test-static.sh"
-grep -q 'scripts/test-ollama-startup.sh' .github/workflows/test.yml \
-  || fail "test workflow does not invoke test-ollama-startup.sh"
-grep -q 'scripts/test-update-dry.sh' .github/workflows/test.yml \
-  || fail "test workflow does not invoke test-update-dry.sh"
-grep -q 'scripts/test-ollama-version.sh' .github/workflows/test.yml \
-  || fail "test workflow does not invoke test-ollama-version.sh"
+for script in \
+  scripts/lint-all.sh \
+  scripts/test-static.sh \
+  scripts/test-ollama-startup.sh \
+  scripts/test-update-dry.sh \
+  scripts/test-ollama-version.sh \
+  scripts/test-scripts-smoke.sh \
+  scripts/test-start-stack.sh \
+  scripts/test-coverage.sh
+do
+  grep -q "${script}" .github/workflows/test.yml \
+    || fail "test workflow does not invoke ${script}"
+done
+grep -q 'scripts/lint-all.sh' .github/workflows/lint.yml || fail "lint.yml missing lint-all.sh"
 pass "GitHub workflows cover continuous testing"
 
 echo

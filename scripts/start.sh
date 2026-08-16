@@ -14,7 +14,7 @@ log() {
 }
 
 require_root() {
-  if [[ "${EUID}" -ne 0 ]]; then
+  if [[ "${EUID}" -ne 0 && "${ALLOW_NONROOT:-0}" != "1" ]]; then
     log "ERROR: must run as root"
     exit 1
   fi
@@ -55,7 +55,10 @@ start_stack() {
 }
 
 main() {
-  require_root
+  if [[ "${EUID}" -ne 0 && "${ALLOW_NONROOT:-0}" != "1" ]]; then
+    log "ERROR: must run as root"
+    exit 1
+  fi
   validate_config
   wait_for_docker
   start_stack

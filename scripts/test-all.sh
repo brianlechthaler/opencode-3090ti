@@ -10,11 +10,19 @@ echo "# opencode-3090ti test suite"
 echo "############################################"
 echo
 
+bash scripts/lint-all.sh
+echo
 bash scripts/test-static.sh
 echo
 bash scripts/test-ollama-version.sh
 echo
 bash scripts/test-update-dry.sh
+echo
+bash scripts/test-scripts-smoke.sh
+echo
+bash scripts/test-start-stack.sh
+echo
+bash scripts/test-coverage.sh
 echo
 
 if [[ "${SKIP_STARTUP:-0}" == "1" ]]; then
@@ -25,5 +33,5 @@ fi
 
 echo
 echo "############################################"
-echo "# All tests passed"
+echo "# All tests passed (100% coverage gate)"
 echo "############################################"

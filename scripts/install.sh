@@ -13,7 +13,7 @@ log() {
 }
 
 require_root() {
-  if [[ "${EUID}" -ne 0 ]]; then
+  if [[ "${EUID}" -ne 0 && "${ALLOW_NONROOT:-0}" != "1" ]]; then
     echo "Run as root: sudo $0"
     exit 1
   fi
@@ -44,6 +44,10 @@ make_scripts_executable() {
 }
 
 install_systemd_units() {
+  if [[ "${SKIP_SYSTEMD:-0}" == "1" ]]; then
+    log "SKIP_SYSTEMD=1; skipping systemd unit install"
+    return 0
+  fi
   install -m 644 "${INSTALL_DIR}/systemd/"*.service /etc/systemd/system/
   install -m 644 "${INSTALL_DIR}/systemd/"*.timer /etc/systemd/system/
   systemctl daemon-reload
@@ -52,6 +56,10 @@ install_systemd_units() {
 }
 
 start_services() {
+  if [[ "${SKIP_START:-0}" == "1" ]]; then
+    log "SKIP_START=1; skipping service start"
+    return 0
+  fi
   systemctl start opencode-3090ti-update.timer
   systemctl restart opencode-3090ti.service
   log "opencode-3090ti started"
@@ -64,6 +72,11 @@ main() {
   make_scripts_executable
   install_systemd_units
   start_services
+
+  if [[ "${SKIP_START:-0}" == "1" ]]; then
+    log "install complete (services not started)"
+    return 0
+  fi
 
   cat <<EOF
 

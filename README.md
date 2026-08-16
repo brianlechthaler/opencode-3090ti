@@ -30,11 +30,12 @@ Pinned image: `ollama/ollama:0.32.13`. Details: [Auto-updates](docs/features/aut
 ## Testing
 
 ```bash
-./scripts/test-all.sh                 # static + version + update dry-run + Ollama startup
+./scripts/test-all.sh                 # lint + full suite + 100% coverage gate + Ollama startup
 SKIP_STARTUP=1 ./scripts/test-all.sh  # skip Docker pull/start
+./scripts/lint-all.sh                 # shellcheck, actionlint, YAML/JSON/Modelfile/systemd
 ```
 
-GitHub Actions run the same suite on every push/PR and daily (`.github/workflows/test.yml`).
+GitHub Actions run lint + the full suite on every push/PR and daily. `scripts/test-coverage.sh` fails if any project file is missing from the coverage manifest.
 
 ## Documentation
 

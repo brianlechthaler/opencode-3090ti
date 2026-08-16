@@ -57,7 +57,9 @@ sequenceDiagram
 | `run-opencode.sh` | Non-interactive `opencode run --auto` with TTY shim |
 | `scripts/install.sh` | Clone to `/opt/opencode-3090ti`, enable systemd + 6h updater |
 | `scripts/update.sh` | `git pull` + `docker compose pull/up` (timer + manual) |
-| `scripts/test-all.sh` | Full local/CI suite (static, version, update dry-run, Ollama startup) |
+| `scripts/test-all.sh` | Full suite: lint + static + smoke + coverage gate + Ollama startup |
+| `scripts/lint-all.sh` | shellcheck, actionlint, YAML/JSON/Modelfile/systemd lint |
+| `scripts/test-coverage.sh` | 100% file inventory gate (every tracked file must have lint+test owners) |
 | `docker-compose.ci.yml` | Non-GPU compose overlay for CI startup tests |
 
 ## GPU memory budget (default 30B)

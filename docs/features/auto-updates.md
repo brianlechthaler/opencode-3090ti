@@ -6,7 +6,7 @@ Keeps the host on the latest repo stack and the latest stable Ollama image.
 
 `.github/workflows/ollama-version-bump.yml` runs weekly (Mondays 09:00 UTC) and on demand:
 
-1. Compares the pinned tag in `docker-compose.yml` with the newest stable `ollama/ollama` semver on Docker Hub (`scripts/ollama-version.sh`)
+1. Compares the pinned tag in `docker-compose.yml` with the newest stable Ollama GitHub release (`scripts/ollama-version.sh`; maps to `ollama/ollama:<semver>` on Docker Hub)
 2. Opens a PR that bumps `docker-compose.yml` (and docs) when a newer release exists
 3. Labels the PR `automerge` so CI can squash-merge it after checks pass
 

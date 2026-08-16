@@ -55,7 +55,7 @@ jobs:
           title: Bump Ollama to ${{ steps.versions.outputs.latest }}
           commit-message: Bump Ollama to ${{ steps.versions.outputs.latest }}
           body: |
-            Automated weekly bump to the latest stable Ollama Docker image.
+            Automated weekly bump to the latest stable Ollama release (`ollama/ollama` Docker image).
 
             - **Current:** ${{ steps.versions.outputs.current }}
             - **Latest:** ${{ steps.versions.outputs.latest }}

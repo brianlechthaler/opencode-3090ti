@@ -1,3 +1,4 @@
 # GPU settings are now in docker-compose.yml by default.
 # This file is kept for backwards compatibility with:
 #   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+services: {}

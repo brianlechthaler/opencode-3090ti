@@ -1,6 +1,5 @@
-# This project orchestrates the upstream ollama/ollama image via docker-compose.
-# There is no Dockerfile or custom image to build and publish to GHCR.
-# This workflow validates compose configuration only.
+# Validates compose configuration and the CI (non-GPU) overlay.
+# Runtime startup of the pinned Ollama image is covered by Test → ollama-startup.
 name: Container
 
 on:
@@ -8,10 +7,12 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: "15 6 * * *"
   workflow_dispatch:
 
 concurrency:
-  group: container-${{ github.ref }}
+  group: container-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 permissions:
@@ -27,7 +28,20 @@ jobs:
         run: |
           docker compose -f docker-compose.yml config --quiet
           docker compose -f docker-compose.yml -f docker-compose.gpu.yml config --quiet
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml config --quiet
 
-      - name: Confirm upstream image reference
+      - name: Confirm pinned upstream image reference
         run: |
-          grep -q 'image: ollama/ollama:latest' docker-compose.yml
+          grep -qE 'image: ollama/ollama:[0-9]+\.[0-9]+\.[0-9]+' docker-compose.yml
+          CURRENT="$(bash scripts/ollama-version.sh current)"
+          echo "Pinned Ollama version: ${CURRENT}"
+          grep -q "image: ollama/ollama:${CURRENT}" docker-compose.yml
+
+      - name: Confirm CI overlay clears GPU requirements
+        run: |
+          rendered="$(docker compose -f docker-compose.yml -f docker-compose.ci.yml config)"
+          if echo "${rendered}" | grep -qE 'device_ids:|driver: nvidia|count: all'; then
+            echo "${rendered}"
+            echo "CI overlay still requests NVIDIA devices" >&2
+            exit 1
+          fi

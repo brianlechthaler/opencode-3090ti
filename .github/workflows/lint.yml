@@ -24,4 +24,4 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shellcheck
 
       - name: Run ShellCheck
-        run: shellcheck *.sh
+        run: shellcheck *.sh scripts/*.sh

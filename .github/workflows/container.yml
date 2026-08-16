@@ -28,6 +28,7 @@ jobs:
           docker compose -f docker-compose.yml config --quiet
           docker compose -f docker-compose.yml -f docker-compose.gpu.yml config --quiet
 
-      - name: Confirm upstream image reference
+      - name: Confirm pinned upstream image reference
         run: |
-          grep -q 'image: ollama/ollama:latest' docker-compose.yml
+          grep -qE 'image: ollama/ollama:[0-9]+\.[0-9]+\.[0-9]+' docker-compose.yml
+          bash scripts/ollama-version.sh current

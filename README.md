@@ -14,12 +14,26 @@ Run [OpenCode](https://opencode.ai) against local Ollama models on an NVIDIA GPU
 
 See [Getting started](docs/getting-started.md) for prerequisites, troubleshooting, and alternative models.
 
+## Unattended install + auto-updates
+
+Mirror of the [remote-tools](https://github.com/brianlechthaler/remote-tools) update pattern:
+
+- Weekly GitHub Action bumps the pinned `ollama/ollama` image when Docker Hub has a newer stable release
+- Host systemd timer pulls this repo and refreshes containers every 6 hours
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/brianlechthaler/opencode-3090ti/main/scripts/install.sh | sudo bash
+```
+
+Pinned image: `ollama/ollama:0.32.13`. Details: [Auto-updates](docs/features/auto-updates.md).
+
 ## Documentation
 
 - [Getting started](docs/getting-started.md)
 - [Architecture](docs/architecture.md)
 - [Features](docs/features/)
   - [Ollama Docker stack](docs/features/ollama-docker.md)
+  - [Auto-updates](docs/features/auto-updates.md)
   - [Model setup](docs/features/model-setup.md)
   - [OpenCode configuration](docs/features/opencode-config.md)
   - [Interactive TUI](docs/features/interactive-tui.md)

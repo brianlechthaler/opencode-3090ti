@@ -1,0 +1,9 @@
+[Unit]
+Description=Pull latest OpenCode Ollama stack from GitHub
+Documentation=https://github.com/brianlechthaler/opencode-3090ti
+After=docker.service network-online.target opencode-3090ti.service
+
+[Service]
+Type=oneshot
+Environment=INSTALL_DIR=/opt/opencode-3090ti
+ExecStart=/opt/opencode-3090ti/scripts/update.sh

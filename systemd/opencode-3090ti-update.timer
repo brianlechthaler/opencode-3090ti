@@ -1,0 +1,12 @@
+[Unit]
+Description=Check for OpenCode Ollama stack updates periodically
+Documentation=https://github.com/brianlechthaler/opencode-3090ti
+
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=6h
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

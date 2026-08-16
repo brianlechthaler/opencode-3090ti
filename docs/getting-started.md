@@ -32,13 +32,26 @@ Or run scripts from a terminal where sudo can prompt for a password.
 
 ## First-time setup
 
-Run these from the repo root:
+### Option A — interactive (repo checkout)
 
 ```bash
 ./start.sh           # starts Ollama on http://localhost:11434
 ./setup-model.sh     # pulls qwen3-coder:30b and creates qwen3-coder-30b-opencode
 ./setup-opencode.sh  # installs OpenCode CLI and copies opencode.json
 ```
+
+### Option B — unattended host install
+
+Installs under `/opt/opencode-3090ti`, starts Ollama on boot, and refreshes the stack every 6 hours:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/brianlechthaler/opencode-3090ti/main/scripts/install.sh | sudo bash
+cd /opt/opencode-3090ti
+./setup-model.sh
+./setup-opencode.sh
+```
+
+See [Auto-updates](features/auto-updates.md).
 
 `setup-model.sh` also creates `llama3.2-opencode` immediately (no download) so you have a working fallback while the 30B model pulls.
 

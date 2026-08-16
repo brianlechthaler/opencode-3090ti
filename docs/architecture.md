@@ -47,7 +47,7 @@ sequenceDiagram
 
 | File | Role |
 |------|------|
-| `docker-compose.yml` | Ollama service, GPU env, 64k context, KV cache tuning |
+| `docker-compose.yml` | Ollama service (pinned image), GPU env, 64k context, KV cache tuning |
 | `opencode.json` | Template copied to `~/.config/opencode/opencode.json` |
 | `Modelfile.*` | Custom model layers (context, system prompt, renderer/parser) |
 | `setup-and-start.sh` | Docker compose up, print next steps |
@@ -55,6 +55,10 @@ sequenceDiagram
 | `setup-opencode.sh` | Install OpenCode, sync config and model ID |
 | `opencode.sh` | Interactive launcher with long bash timeouts |
 | `run-opencode.sh` | Non-interactive `opencode run --auto` with TTY shim |
+| `scripts/install.sh` | Clone to `/opt/opencode-3090ti`, enable systemd + 6h updater |
+| `scripts/update.sh` | `git pull` + `docker compose pull/up` (timer + manual) |
+| `scripts/ollama-version.sh` | Current vs latest Ollama Docker Hub semver |
+| `systemd/` | Boot service and 6-hour update timer |
 
 ## GPU memory budget (default 30B)
 
@@ -77,5 +81,6 @@ Tuned for 24 GB (RTX 3090 Ti):
 ## Related
 
 - [Ollama Docker stack](features/ollama-docker.md)
+- [Auto-updates](features/auto-updates.md)
 - [Model setup](features/model-setup.md)
 - [OpenCode configuration](features/opencode-config.md)

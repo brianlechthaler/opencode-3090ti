@@ -1,0 +1,13 @@
+# CI / non-GPU override for docker-compose.yml.
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d
+#
+# GitHub-hosted runners (and most CI agents) have no NVIDIA devices, so the
+# production `gpus: all` setting cannot start. This overlay drops GPU
+# requirements while keeping the same image, ports, and volume.
+services:
+  ollama:
+    gpus: !reset null
+    environment:
+      NVIDIA_VISIBLE_DEVICES: ""
+      OLLAMA_NUM_GPU: "0"

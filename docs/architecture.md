@@ -57,8 +57,8 @@ sequenceDiagram
 | `run-opencode.sh` | Non-interactive `opencode run --auto` with TTY shim |
 | `scripts/install.sh` | Clone to `/opt/opencode-3090ti`, enable systemd + 6h updater |
 | `scripts/update.sh` | `git pull` + `docker compose pull/up` (timer + manual) |
-| `scripts/ollama-version.sh` | Current vs latest Ollama Docker Hub semver |
-| `systemd/` | Boot service and 6-hour update timer |
+| `scripts/test-all.sh` | Full local/CI suite (static, version, update dry-run, Ollama startup) |
+| `docker-compose.ci.yml` | Non-GPU compose overlay for CI startup tests |
 
 ## GPU memory budget (default 30B)
 

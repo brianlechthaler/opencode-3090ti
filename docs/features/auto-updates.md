@@ -66,3 +66,14 @@ sudo BRANCH=cursor/some-branch /opt/opencode-3090ti/scripts/update.sh
 
 - [Ollama Docker stack](ollama-docker.md)
 - [Getting started](../getting-started.md)
+- [Architecture](../architecture.md)
+
+## Testing
+
+```bash
+./scripts/test-all.sh              # static + version + update dry-run + Ollama startup
+SKIP_STARTUP=1 ./scripts/test-all.sh
+```
+
+CI runs these on every PR/push and daily via `.github/workflows/test.yml`.
+

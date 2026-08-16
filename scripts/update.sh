@@ -31,6 +31,10 @@ image_id() {
 }
 
 reload_systemd_units() {
+  if [[ "${SKIP_SYSTEMD:-0}" == "1" ]]; then
+    log "SKIP_SYSTEMD=1; skipping systemd unit reload"
+    return 0
+  fi
   if [[ ! -d "${INSTALL_DIR}/systemd" ]]; then
     log "WARNING: missing ${INSTALL_DIR}/systemd; skipping unit reload"
     return 0
@@ -74,20 +78,22 @@ apply_container_update() {
 }
 
 main() {
-  if [[ "${EUID}" -ne 0 ]]; then
+  if [[ "${EUID}" -ne 0 && "${ALLOW_NONROOT:-0}" != "1" ]]; then
     echo "Run as root: sudo $0"
     exit 1
-  fi
-
-  if ! docker info >/dev/null 2>&1; then
-    log "docker unavailable; skipping update"
-    exit 0
   fi
 
   sync_repo
   make_scripts_executable
   reload_systemd_units
-  apply_container_update
+
+  if [[ "${SKIP_COMPOSE:-0}" == "1" ]]; then
+    log "SKIP_COMPOSE=1; skipping container pull/up"
+  elif ! docker info >/dev/null 2>&1; then
+    log "docker unavailable; skipping container update"
+  else
+    apply_container_update
+  fi
   log "update complete"
 }
 

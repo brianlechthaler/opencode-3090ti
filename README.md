@@ -27,6 +27,15 @@ curl -fsSL https://raw.githubusercontent.com/brianlechthaler/opencode-3090ti/mai
 
 Pinned image: `ollama/ollama:0.32.13`. Details: [Auto-updates](docs/features/auto-updates.md).
 
+## Testing
+
+```bash
+./scripts/test-all.sh                 # static + version + update dry-run + Ollama startup
+SKIP_STARTUP=1 ./scripts/test-all.sh  # skip Docker pull/start
+```
+
+GitHub Actions run the same suite on every push/PR and daily (`.github/workflows/test.yml`).
+
 ## Documentation
 
 - [Getting started](docs/getting-started.md)

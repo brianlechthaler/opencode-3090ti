@@ -5,58 +5,57 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    # Continuous regression coverage (daily 06:15 UTC).
+    - cron: "15 6 * * *"
   workflow_dispatch:
 
 concurrency:
-  group: test-${{ github.ref }}
+  group: test-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  test:
+  static:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Shell script syntax
-        run: |
-          shopt -s nullglob
-          for script in *.sh scripts/*.sh; do
-            echo "Checking ${script}..."
-            bash -n "${script}"
-          done
+      - name: Install ShellCheck and PyYAML
+        run: sudo apt-get update -qq && sudo apt-get install -y shellcheck python3-yaml
 
-      - name: Validate opencode.json
-        run: python3 -m json.tool opencode.json > /dev/null
+      - name: Run static tests
+        run: bash scripts/test-static.sh
 
-      - name: Validate Modelfiles exist
-        run: |
-          test -f Modelfile.qwen3-coder
-          test -f Modelfile.qwen3
-          test -f Modelfile.qwen2.5-coder-14b
-          test -f Modelfile.llama
+  ollama-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Validate docker compose files
-        run: |
-          docker compose -f docker-compose.yml config --quiet
-          docker compose -f docker-compose.yml -f docker-compose.gpu.yml config --quiet
+      - name: Exercise ollama-version helper
+        run: bash scripts/test-ollama-version.sh
 
-      - name: Validate ollama version helper
-        run: |
-          CURRENT="$(bash scripts/ollama-version.sh current)"
-          echo "Pinned Ollama version: ${CURRENT}"
-          [[ "${CURRENT}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+  update-dry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Validate systemd units exist
-        run: |
-          test -f systemd/opencode-3090ti.service
-          test -f systemd/opencode-3090ti-update.service
-          test -f systemd/opencode-3090ti-update.timer
+      - name: Dry-run host updater
+        run: bash scripts/test-update-dry.sh
+
+  ollama-startup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start pinned Ollama image and hit /api/tags
+        run: bash scripts/test-ollama-startup.sh
 
   automerge:
-    needs: [test]
+    needs: [static, ollama-version, update-dry, ollama-startup]
     if: >-
       github.event_name == 'pull_request' &&
       contains(github.event.pull_request.labels.*.name, 'automerge')

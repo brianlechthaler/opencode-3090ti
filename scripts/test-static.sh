@@ -133,6 +133,20 @@ for path in paths:
 PY
 pass "workflow YAML parses"
 
+echo
+echo "== workflow coverage =="
+grep -q 'name: Bump Ollama' .github/workflows/ollama-version-bump.yml \
+  || fail "version bump workflow missing"
+grep -q 'schedule:' .github/workflows/test.yml || fail "test workflow missing schedule for continuous runs"
+grep -q 'scripts/test-static.sh' .github/workflows/test.yml \
+  || fail "test workflow does not invoke test-static.sh"
+grep -q 'scripts/test-ollama-startup.sh' .github/workflows/test.yml \
+  || fail "test workflow does not invoke test-ollama-startup.sh"
+grep -q 'scripts/test-update-dry.sh' .github/workflows/test.yml \
+  || fail "test workflow does not invoke test-update-dry.sh"
+grep -q 'scripts/test-ollama-version.sh' .github/workflows/test.yml \
+  || fail "test workflow does not invoke test-ollama-version.sh"
+pass "GitHub workflows cover continuous testing"
 
 echo
 echo "Static tests passed"

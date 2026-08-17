@@ -1,0 +1,43 @@
+services:
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: vllm
+    restart: unless-stopped
+    gpus: all
+    ipc: host
+    shm_size: "16g"
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      HF_TOKEN: ${HF_TOKEN:-}
+      HUGGING_FACE_HUB_TOKEN: ${HF_TOKEN:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - huggingface_cache:/root/.cache/huggingface
+    command:
+      - --model
+      - Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8
+      - --served-model-name
+      - qwen3-coder-30b-opencode
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --dtype
+      - auto
+      - --gpu-memory-utilization
+      - "0.95"
+      - --max-model-len
+      - "8192"
+      - --kv-cache-dtype
+      - fp8_e4m3
+      - --enable-chunked-prefill
+      - --enable-auto-tool-choice
+      - --tool-call-parser
+      - qwen3_coder
+      - --max-num-seqs
+      - "1"
+      - --enforce-eager
+
+volumes:
+  huggingface_cache:

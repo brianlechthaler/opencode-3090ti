@@ -7,6 +7,7 @@ BASE_MODEL="${OLLAMA_MODEL:-qwen3-coder:30b}"
 CUSTOM_MODEL="${OLLAMA_CUSTOM_MODEL:-qwen3-coder-30b-opencode}"
 MODelfile="${OLLAMA_MODELFILE:-Modelfile.qwen3-coder}"
 PULL_TIMEOUT="${PULL_TIMEOUT:-300}"
+OLLAMA_URL="${OLLAMA_URL:-http://localhost:11434}"
 
 if docker info &>/dev/null 2>&1; then
   COMPOSE=(docker compose)
@@ -17,7 +18,7 @@ else
   exit 1
 fi
 
-if ! curl -fsS http://localhost:11434/api/tags &>/dev/null; then
+if ! curl -fsS "${OLLAMA_URL}/api/tags" &>/dev/null; then
   echo "Ollama is not running. Start it first: ./start.sh"
   exit 1
 fi

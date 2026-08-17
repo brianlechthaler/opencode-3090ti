@@ -34,7 +34,12 @@ pass "start.sh validates compose path"
 
 echo
 echo "== starts stack with CI overlay via compose file =="
+# Isolate the compose project: the default project name derives from the
+# compose file's directory, so reusing "opencode-3090ti" would collide with a
+# real stack deployed from a same-named checkout (up would recreate its
+# container and down -v would delete its volume).
 install_dir="${tmpdir}/opt/opencode-3090ti"
+PROJECT="start-stack-test-$$"
 mkdir -p "${install_dir}"
 # Use CI overlay so GPU-less environments can start.
 cat > "${install_dir}/docker-compose.yml" <<EOF
@@ -59,7 +64,8 @@ if ! docker info >/dev/null 2>&1; then
   sudo chmod 666 /var/run/docker.sock 2>/dev/null || true
 fi
 
-ALLOW_NONROOT=1 INSTALL_DIR="${install_dir}" bash ./scripts/start.sh \
+ALLOW_NONROOT=1 INSTALL_DIR="${install_dir}" COMPOSE_PROJECT_NAME="${PROJECT}" \
+  bash ./scripts/start.sh \
   >/tmp/start-ok.out 2>&1 || {
   cat /tmp/start-ok.out >&2
   fail "start.sh failed to start stack"
@@ -69,8 +75,9 @@ pass "start.sh brings stack up"
 
 # Cleanup container created with fixed container_name.
 docker rm -f "start-stack-test-$$" >/dev/null 2>&1 || true
-# Also remove anonymous project resources if compose named them from directory.
-docker compose -f "${install_dir}/docker-compose.yml" down -v >/dev/null 2>&1 || true
+# Remove the isolated test project's resources (network + volume).
+COMPOSE_PROJECT_NAME="${PROJECT}" \
+  docker compose -f "${install_dir}/docker-compose.yml" down -v >/dev/null 2>&1 || true
 
 echo
 echo "== systemd unit points at start.sh =="

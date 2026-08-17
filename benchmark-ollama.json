@@ -1,0 +1,53 @@
+{
+  "backend": "ollama",
+  "base_url": "http://localhost:11434/v1",
+  "model": "qwen3-coder-30b-opencode:latest",
+  "timestamp": "2026-07-10T21:25:58Z",
+  "tests": [
+    {
+      "name": "short_completion",
+      "elapsed_s": 0.531,
+      "prompt_tokens": 45,
+      "completion_tokens": 75,
+      "tokens_per_second": 141.28,
+      "response_chars": 206
+    },
+    {
+      "name": "medium_completion",
+      "elapsed_s": 1.468,
+      "prompt_tokens": 69,
+      "completion_tokens": 243,
+      "tokens_per_second": 165.49,
+      "response_chars": 764
+    },
+    {
+      "name": "long_prefill",
+      "elapsed_s": 1.566,
+      "prompt_tokens": 93,
+      "completion_tokens": 256,
+      "tokens_per_second": 163.52,
+      "response_chars": 1069
+    },
+    {
+      "name": "streaming_short",
+      "elapsed_s": 0.544,
+      "time_to_first_token_s": 0.141,
+      "completion_tokens": 52,
+      "tokens_per_second": 95.66,
+      "response_chars": 206,
+      "streamed": true
+    },
+    {
+      "name": "tool_calling",
+      "elapsed_s": 0.367,
+      "success": true,
+      "detail": "correct tool call",
+      "tool_calls_count": 1
+    }
+  ],
+  "summary": {
+    "avg_tokens_per_second": 141.49,
+    "test_count": 5,
+    "tool_calling_ok": true
+  }
+}

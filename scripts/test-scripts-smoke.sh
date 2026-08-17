@@ -94,25 +94,29 @@ pass "setup-opencode.sh (config write)"
 
 echo
 echo "== setup-model.sh refuses when Ollama down =="
-bash ./setup-model.sh >/tmp/setup-model.out 2>&1 && fail "setup-model.sh should fail when Ollama is down"
+OLLAMA_URL="http://127.0.0.1:1" \
+  bash ./setup-model.sh >/tmp/setup-model.out 2>&1 && fail "setup-model.sh should fail when Ollama is down"
 grep -qi 'Ollama is not running' /tmp/setup-model.out || fail "setup-model.sh Ollama-down message"
 pass "setup-model.sh (Ollama down)"
 
 echo
 echo "== start.sh delegates to setup-and-start.sh =="
-# Replace docker with a stub that fails compose up early? Better: ensure start.sh is a thin wrapper.
 grep -q 'setup-and-start.sh' start.sh || fail "start.sh should exec setup-and-start.sh"
-# setup-and-start with docker available would start real stack; instead verify docker detection error path via PATH.
-PATH="/usr/bin:/bin" bash ./setup-and-start.sh >/tmp/setup-start.out 2>&1 && status=0 || status=$?
-if docker info >/dev/null 2>&1 || sudo docker info >/dev/null 2>&1; then
-  # Docker is available in this environment; just confirm script is executable and syntax-valid.
-  [[ ${status} -eq 0 ]] || true
-  pass "setup-and-start.sh reachable (docker present in env)"
-else
-  [[ ${status} -ne 0 ]] || fail "setup-and-start.sh should fail without docker"
-  grep -qi 'Docker is not accessible' /tmp/setup-start.out || fail "setup-and-start.sh docker message"
-  pass "setup-and-start.sh (docker missing)"
-fi
+# Stub docker + sudo so the script takes the "docker missing" path and never
+# touches real host containers (running it for real would mutate the stack).
+cat > "${tmpdir}/bin/docker" <<'EOF'
+#!/usr/bin/env bash
+exit 1
+EOF
+cat > "${tmpdir}/bin/sudo" <<'EOF'
+#!/usr/bin/env bash
+exit 1
+EOF
+chmod +x "${tmpdir}/bin/docker" "${tmpdir}/bin/sudo"
+PATH="${tmpdir}/bin:/usr/bin:/bin" bash ./setup-and-start.sh >/tmp/setup-start.out 2>&1 \
+  && fail "setup-and-start.sh should fail without docker"
+grep -qi 'Docker is not accessible' /tmp/setup-start.out || fail "setup-and-start.sh docker message"
+pass "setup-and-start.sh (docker missing)"
 
 echo
 echo "== install-nvidia-container-toolkit.sh structure =="
@@ -138,6 +142,27 @@ env ALLOW_NONROOT=1 SKIP_SYSTEMD=1 SKIP_START=1 \
 [[ -x "${install_dir}/scripts/update.sh" ]] || fail "install.sh did not chmod scripts"
 git branch -D "${branch}" >/dev/null 2>&1 || true
 pass "install.sh dry-run"
+
+echo
+echo "== benchmark.sh --help =="
+bash ./benchmark.sh --help >/tmp/benchmark-help.out 2>&1 || fail "benchmark.sh --help should exit 0"
+grep -qi 'Usage:' /tmp/benchmark-help.out || fail "benchmark.sh --help missing usage"
+grep -q 'BACKEND' /tmp/benchmark-help.out || fail "benchmark.sh --help missing BACKEND docs"
+pass "benchmark.sh (--help)"
+
+echo
+echo "== pull-model-vllm.sh structure =="
+grep -q 'docker-compose.vllm.yml' pull-model-vllm.sh || fail "pull-model-vllm.sh missing compose reference"
+grep -q 'huggingface_cache' pull-model-vllm.sh || fail "pull-model-vllm.sh missing cache volume"
+grep -q 'snapshot_download' pull-model-vllm.sh || fail "pull-model-vllm.sh missing snapshot_download"
+pass "pull-model-vllm.sh"
+
+echo
+echo "== start-vllm.sh structure =="
+grep -q 'docker-compose.vllm.yml' start-vllm.sh || fail "start-vllm.sh missing compose reference"
+grep -q 'stop ollama' start-vllm.sh || fail "start-vllm.sh should stop ollama first"
+grep -q 'Model not fully downloaded' start-vllm.sh || fail "start-vllm.sh missing cache guard"
+pass "start-vllm.sh"
 
 echo
 echo "== Modelfile + opencode.json cross-checks =="

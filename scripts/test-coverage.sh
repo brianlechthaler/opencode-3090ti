@@ -21,22 +21,28 @@ pass() {
 # linted_by / tested_by are comma-separated script names (or "-" if N/A).
 MANIFEST=$(cat <<'EOF'
 .gitignore|-|test-coverage.sh
+benchmark-ollama.json|lint-all.sh|test-static.sh
 README.md|lint-all.sh|test-static.sh
+ollama_performance_summary.md|-|test-static.sh
 docker-compose.yml|lint-all.sh|test-static.sh,test-ollama-startup.sh
 docker-compose.gpu.yml|lint-all.sh|test-static.sh
 docker-compose.ci.yml|lint-all.sh|test-static.sh,test-ollama-startup.sh
+docker-compose.vllm.yml|lint-all.sh|test-static.sh
 opencode.json|lint-all.sh|test-static.sh,test-scripts-smoke.sh
 Modelfile.llama|lint-all.sh|test-static.sh,test-scripts-smoke.sh
 Modelfile.qwen2.5-coder-14b|lint-all.sh|test-static.sh,test-scripts-smoke.sh
 Modelfile.qwen3|lint-all.sh|test-static.sh,test-scripts-smoke.sh
 Modelfile.qwen3-coder|lint-all.sh|test-static.sh,test-scripts-smoke.sh
+benchmark.sh|lint-all.sh|test-scripts-smoke.sh
 install-nvidia-container-toolkit.sh|lint-all.sh|test-scripts-smoke.sh
 opencode.sh|lint-all.sh|test-scripts-smoke.sh
+pull-model-vllm.sh|lint-all.sh|test-scripts-smoke.sh
 run-opencode.sh|lint-all.sh|test-scripts-smoke.sh
 setup-and-start.sh|lint-all.sh|test-scripts-smoke.sh
 setup-model.sh|lint-all.sh|test-scripts-smoke.sh
 setup-opencode.sh|lint-all.sh|test-scripts-smoke.sh
 start.sh|lint-all.sh|test-scripts-smoke.sh
+start-vllm.sh|lint-all.sh|test-scripts-smoke.sh
 scripts/install.sh|lint-all.sh|test-update-dry.sh,test-scripts-smoke.sh
 scripts/lint-all.sh|lint-all.sh|test-coverage.sh
 scripts/ollama-version.sh|lint-all.sh|test-ollama-version.sh

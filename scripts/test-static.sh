@@ -38,18 +38,24 @@ required=(
   docker-compose.yml
   docker-compose.gpu.yml
   docker-compose.ci.yml
+  docker-compose.vllm.yml
   opencode.json
+  benchmark-ollama.json
+  ollama_performance_summary.md
   Modelfile.qwen3-coder
   Modelfile.qwen3
   Modelfile.qwen2.5-coder-14b
   Modelfile.llama
+  benchmark.sh
   install-nvidia-container-toolkit.sh
   opencode.sh
+  pull-model-vllm.sh
   run-opencode.sh
   setup-and-start.sh
   setup-model.sh
   setup-opencode.sh
   start.sh
+  start-vllm.sh
   scripts/install.sh
   scripts/update.sh
   scripts/start.sh
@@ -85,9 +91,10 @@ done
 pass "required project files exist"
 
 echo
-echo "== opencode.json =="
+echo "== JSON files =="
 python3 -m json.tool opencode.json >/dev/null || fail "opencode.json is invalid JSON"
-pass "opencode.json is valid JSON"
+python3 -m json.tool benchmark-ollama.json >/dev/null || fail "benchmark-ollama.json is invalid JSON"
+pass "JSON files are valid"
 
 echo
 echo "== Modelfile directives =="
@@ -104,6 +111,7 @@ echo "== docker compose config =="
 docker compose -f docker-compose.yml config --quiet || fail "compose config failed"
 docker compose -f docker-compose.yml -f docker-compose.gpu.yml config --quiet || fail "gpu overlay config failed"
 docker compose -f docker-compose.yml -f docker-compose.ci.yml config --quiet || fail "ci overlay config failed"
+docker compose -f docker-compose.vllm.yml config --quiet || fail "vllm compose config failed"
 pass "compose configs render"
 
 echo

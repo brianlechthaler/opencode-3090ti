@@ -119,8 +119,10 @@ fi
 
 echo
 echo "== JSON =="
-python3 -m json.tool opencode.json >/dev/null || fail "opencode.json invalid"
-pass "opencode.json valid"
+for json_file in opencode.json benchmark-ollama.json; do
+  python3 -m json.tool "${json_file}" >/dev/null || fail "${json_file} invalid"
+done
+pass "JSON files valid"
 
 echo
 echo "== Modelfiles =="

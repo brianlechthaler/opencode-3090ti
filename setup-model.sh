@@ -3,9 +3,9 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-BASE_MODEL="${OLLAMA_MODEL:-qwen3-coder:30b}"
-CUSTOM_MODEL="${OLLAMA_CUSTOM_MODEL:-qwen3-coder-30b-opencode}"
-MODelfile="${OLLAMA_MODELFILE:-Modelfile.qwen3-coder}"
+BASE_MODEL="${OLLAMA_MODEL:-qwen3.8:latest}"
+CUSTOM_MODEL="${OLLAMA_CUSTOM_MODEL:-qwen3.8-opencode}"
+MODelfile="${OLLAMA_MODELFILE:-Modelfile.qwen3.8}"
 PULL_TIMEOUT="${PULL_TIMEOUT:-300}"
 OLLAMA_URL="${OLLAMA_URL:-http://localhost:11434}"
 

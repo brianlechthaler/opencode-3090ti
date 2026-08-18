@@ -1,6 +1,6 @@
 # opencode-3090ti
 
-Run [OpenCode](https://opencode.ai) against local Ollama models on an NVIDIA GPU (tuned for a 24 GB RTX 3090 Ti). Pulls Qwen3 Coder 30B with native tool calling, 64k context, and 10-minute bash timeouts for docker builds.
+Run [OpenCode](https://opencode.ai) against local Ollama models on an NVIDIA GPU (tuned for a 24 GB RTX 3090 Ti). Pulls Qwen3.8 27B with native tool calling, 64k context, and 10-minute bash timeouts for docker builds.
 
 ## Quick start
 
@@ -51,7 +51,7 @@ GitHub Actions run lint + the full suite on every push/PR and daily. `scripts/te
 
 ## Requirements
 
-- Linux with NVIDIA GPU (24 GB VRAM recommended for the default 30B model)
+- Linux with NVIDIA GPU (24 GB VRAM recommended for the default 27B model)
 - Docker with GPU support (NVIDIA Container Toolkit)
 - ~20 GB disk for the default model weights
 

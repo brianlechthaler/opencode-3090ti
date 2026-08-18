@@ -10,7 +10,7 @@ Installs the OpenCode CLI and copies `opencode.json` to `~/.config/opencode/open
 2. Verifies Ollama is reachable and the target model exists
 3. Copies `opencode.json` and patches the active model ID and Ollama base URL
 
-Default model: `ollama/qwen3-coder-30b-opencode:latest`.
+Default model: `ollama/qwen3.8-opencode:latest`.
 
 ## Usage
 
@@ -21,7 +21,7 @@ Default model: `ollama/qwen3-coder-30b-opencode:latest`.
 Switch models:
 
 ```bash
-OPENCODE_MODEL=qwen3-8b-opencode:latest ./setup-opencode.sh
+OPENCODE_MODEL=qwen3-coder-30b-opencode:latest ./setup-opencode.sh
 ```
 
 Point at a remote Ollama instance:
@@ -37,7 +37,7 @@ From `opencode.json`:
 | Key | Value | Notes |
 |-----|-------|-------|
 | `enabled_providers` | `["ollama"]` | Local only |
-| `model` | `ollama/qwen3-coder-30b-opencode:latest` | Overwritten by setup script |
+| `model` | `ollama/qwen3.8-opencode:latest` | Overwritten by setup script |
 | `provider.ollama.options.baseURL` | `http://localhost:11434/v1` | OpenAI-compatible API |
 | `provider.ollama.options.timeout` | `600000` | 10-minute request timeout |
 | `provider.ollama.options.chunkTimeout` | `120000` | 2-minute chunk timeout |
@@ -46,7 +46,8 @@ From `opencode.json`:
 
 Registered models in config:
 
-- `qwen3-coder-30b-opencode:latest` — primary
+- `qwen3.8-opencode:latest` — primary
+- `qwen3-coder-30b-opencode:latest` — fallback
 - `qwen3-8b-opencode:latest` — fallback
 - `llama3.2-opencode:latest` — fallback
 
@@ -72,7 +73,7 @@ OPENCODE_EXPERIMENTAL_BASH_DEFAULT_TIMEOUT_MS=120000 ./opencode.sh
 
 **"Model not found"** — run `./setup-model.sh`.
 
-**Tools not executing** — confirm you are on a `qwen3-coder` model with native renderer/parser, not qwen2.5-coder.
+**Tools not executing** — confirm you are on a `qwen3.8` or `qwen3-coder` model with native tool calling, not qwen2.5-coder.
 
 ## Related
 

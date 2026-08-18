@@ -61,7 +61,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        body = json.dumps({"models": [{"name": "qwen3-coder-30b-opencode:latest"}]}).encode()
+        body = json.dumps({"models": [{"name": "qwen3.8-opencode:latest"}]}).encode()
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
@@ -89,7 +89,7 @@ wait "${server_pid}" 2>/dev/null || true
 cfg="${tmpdir}/home-cfg/.config/opencode/opencode.json"
 [[ -f "${cfg}" ]] || fail "setup-opencode.sh did not write config"
 python3 -m json.tool "${cfg}" >/dev/null || fail "written opencode.json is invalid"
-grep -q 'ollama/qwen3-coder-30b-opencode:latest' "${cfg}" || fail "config model not updated"
+grep -q 'ollama/qwen3.8-opencode:latest' "${cfg}" || fail "config model not updated"
 pass "setup-opencode.sh (config write)"
 
 echo
@@ -174,7 +174,7 @@ python3 - <<'PY' || fail "opencode.json model entries incomplete"
 import json
 cfg=json.load(open("opencode.json"))
 models=cfg["provider"]["ollama"]["models"]
-required=["qwen3-coder-30b-opencode:latest","qwen3-8b-opencode:latest","llama3.2-opencode:latest"]
+required=["qwen3.8-opencode:latest","qwen3-coder-30b-opencode:latest","qwen3-8b-opencode:latest","llama3.2-opencode:latest"]
 for name in required:
     assert name in models, name
     assert models[name].get("tools") is True

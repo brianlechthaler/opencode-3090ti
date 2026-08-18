@@ -7,10 +7,10 @@ Pulls base Ollama weights and creates custom models with OpenCode-friendly syste
 `setup-model.sh`:
 
 1. Creates `llama3.2-opencode` from `Modelfile.llama` (no large download; interim fallback)
-2. Pulls the base model (default `qwen3-coder:30b`, ~18 GB) with retry on timeout
+2. Pulls the base model (default `qwen3.8:latest`, ~17 GB) with retry on timeout
 3. Runs `ollama create` with the chosen Modelfile to produce a tagged custom model
 
-Default output: `qwen3-coder-30b-opencode:latest` with 64k context.
+Default output: `qwen3.8-opencode:latest` with 64k context.
 
 ## Usage
 
@@ -19,6 +19,15 @@ Default output: `qwen3-coder-30b-opencode:latest` with 64k context.
 ```
 
 ### Alternative models
+
+**Qwen3 Coder 30B** (previous default):
+
+```bash
+OLLAMA_MODEL=qwen3-coder:30b \
+OLLAMA_CUSTOM_MODEL=qwen3-coder-30b-opencode \
+OLLAMA_MODELFILE=Modelfile.qwen3-coder \
+./setup-model.sh
+```
 
 **Qwen3 8B** (less VRAM):
 
@@ -41,7 +50,7 @@ OLLAMA_MODELFILE=Modelfile.qwen2.5-coder-14b \
 After switching models, update OpenCode:
 
 ```bash
-OPENCODE_MODEL=qwen3-8b-opencode:latest ./setup-opencode.sh
+OPENCODE_MODEL=qwen3-coder-30b-opencode:latest ./setup-opencode.sh
 ```
 
 ## Modelfile contents
@@ -67,9 +76,9 @@ The system prompt instructs the agent to use absolute paths, native tool calls, 
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `OLLAMA_MODEL` | `qwen3-coder:30b` | Base model to pull |
-| `OLLAMA_CUSTOM_MODEL` | `qwen3-coder-30b-opencode` | Name for `ollama create` |
-| `OLLAMA_MODELFILE` | `Modelfile.qwen3-coder` | Modelfile path |
+| `OLLAMA_MODEL` | `qwen3.8:latest` | Base model to pull |
+| `OLLAMA_CUSTOM_MODEL` | `qwen3.8-opencode` | Name for `ollama create` |
+| `OLLAMA_MODELFILE` | `Modelfile.qwen3.8` | Modelfile path |
 | `PULL_TIMEOUT` | `300` | Seconds per pull attempt |
 
 ## After changing context length

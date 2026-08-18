@@ -63,11 +63,11 @@ import json, sys
 models = json.load(sys.stdin).get('models', [])
 for m in models:
     name = m.get('name', '')
-    if 'qwen3-coder' in name and 'opencode' in name:
+    if 'qwen3.8' in name and 'opencode' in name:
         print(name)
         break
 else:
-    print(models[0]['name'] if models else 'qwen3-coder-30b-opencode:latest')
+    print(models[0]['name'] if models else 'qwen3.8-opencode:latest')
 ")"
   else
     MODEL="$(curl -fsS http://localhost:8000/v1/models | python3 -c "

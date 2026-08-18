@@ -42,6 +42,7 @@ required=(
   opencode.json
   benchmark-ollama.json
   ollama_performance_summary.md
+  Modelfile.qwen3.8
   Modelfile.qwen3-coder
   Modelfile.qwen3
   Modelfile.qwen2.5-coder-14b
@@ -98,7 +99,7 @@ pass "JSON files are valid"
 
 echo
 echo "== Modelfile directives =="
-for mf in Modelfile.qwen3-coder Modelfile.qwen3 Modelfile.qwen2.5-coder-14b Modelfile.llama; do
+for mf in Modelfile.qwen3.8 Modelfile.qwen3-coder Modelfile.qwen3 Modelfile.qwen2.5-coder-14b Modelfile.llama; do
   grep -qE '^FROM ' "${mf}" || fail "${mf} missing FROM"
   grep -qE '^PARAMETER num_ctx ' "${mf}" || fail "${mf} missing PARAMETER num_ctx"
 done

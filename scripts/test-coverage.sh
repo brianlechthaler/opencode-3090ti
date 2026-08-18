@@ -32,6 +32,7 @@ opencode.json|lint-all.sh|test-static.sh,test-scripts-smoke.sh
 Modelfile.llama|lint-all.sh|test-static.sh,test-scripts-smoke.sh
 Modelfile.qwen2.5-coder-14b|lint-all.sh|test-static.sh,test-scripts-smoke.sh
 Modelfile.qwen3|lint-all.sh|test-static.sh,test-scripts-smoke.sh
+Modelfile.qwen3.8|lint-all.sh|test-static.sh,test-scripts-smoke.sh
 Modelfile.qwen3-coder|lint-all.sh|test-static.sh,test-scripts-smoke.sh
 benchmark.sh|lint-all.sh|test-scripts-smoke.sh
 install-nvidia-container-toolkit.sh|lint-all.sh|test-scripts-smoke.sh

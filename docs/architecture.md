@@ -35,7 +35,7 @@ sequenceDiagram
 
   User->>OpenCode: task (TUI or run)
   OpenCode->>Ollama: POST /v1/chat/completions
-  Note over OpenCode,Ollama: tool_calls via qwen3-coder parser
+  Note over OpenCode,Ollama: native tool_calls
   Ollama->>GPU: inference
   GPU-->>Ollama: tokens
   Ollama-->>OpenCode: response + tool_calls
@@ -62,7 +62,7 @@ sequenceDiagram
 | `scripts/test-coverage.sh` | 100% file inventory gate (every tracked file must have lint+test owners) |
 | `docker-compose.ci.yml` | Non-GPU compose overlay for CI startup tests |
 
-## GPU memory budget (default 30B)
+## GPU memory budget (default 27B)
 
 Tuned for 24 GB (RTX 3090 Ti):
 
@@ -75,7 +75,8 @@ Tuned for 24 GB (RTX 3090 Ti):
 
 | Custom model | Base | Tool calling | Notes |
 |--------------|------|--------------|-------|
-| `qwen3-coder-30b-opencode` | `qwen3-coder:30b` | Native (`qwen3-coder` renderer/parser) | Default |
+| `qwen3.8-opencode` | `qwen3.8:latest` | Native | Default |
+| `qwen3-coder-30b-opencode` | `qwen3-coder:30b` | Native (`qwen3-coder` renderer/parser) | Previous default |
 | `qwen3-8b-opencode` | `qwen3:8b` | Native | Lower VRAM |
 | `llama3.2-opencode` | `llama3.2:latest` | Native | Fast interim fallback |
 | `qwen2.5-coder-14b` (Modelfile only) | `qwen2.5-coder:14b` | Content JSON only | Not compatible with OpenCode tools |

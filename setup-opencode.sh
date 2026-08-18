@@ -5,9 +5,9 @@ cd "$(dirname "$0")"
 
 OLLAMA_URL="${OLLAMA_URL:-http://localhost:11434}"
 OPENCODE_CONFIG="${HOME}/.config/opencode/opencode.json"
-# qwen3-coder-30b-opencode: native tool_calls via RENDERER/PARSER qwen3-coder
+# qwen3.8-opencode: native tool_calls (tools capability built in)
 # (qwen2.5-coder emits tool JSON in content — OpenCode can't execute those)
-MODEL_ID="${OPENCODE_MODEL:-qwen3-coder-30b-opencode:latest}"
+MODEL_ID="${OPENCODE_MODEL:-qwen3.8-opencode:latest}"
 
 if ! command -v opencode &>/dev/null; then
   echo "Installing OpenCode..."

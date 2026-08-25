@@ -50,7 +50,7 @@ jobs:
         if: steps.versions.outputs.update_needed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BUMP_PAT }}
           branch: deps/ollama-${{ steps.versions.outputs.latest }}
           title: Bump Ollama to ${{ steps.versions.outputs.latest }}
           commit-message: Bump Ollama to ${{ steps.versions.outputs.latest }}

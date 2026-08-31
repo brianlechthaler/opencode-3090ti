@@ -25,7 +25,7 @@ Mirror of the [remote-tools](https://github.com/brianlechthaler/remote-tools) up
 curl -fsSL https://raw.githubusercontent.com/brianlechthaler/opencode-3090ti/main/scripts/install.sh | sudo bash
 ```
 
-Pinned image: `ollama/ollama:0.32.15`. Details: [Auto-updates](docs/features/auto-updates.md).
+Pinned image: `ollama/ollama:0.33.2`. Details: [Auto-updates](docs/features/auto-updates.md).
 
 ## Testing
 

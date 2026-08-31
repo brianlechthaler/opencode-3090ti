@@ -6,7 +6,7 @@ Runs Ollama in Docker with full GPU access and settings tuned for 24 GB VRAM.
 
 `docker-compose.yml` starts a single `ollama` service:
 
-- Image: `ollama/ollama:0.32.15` (pinned; bumped weekly by CI — see [Auto-updates](auto-updates.md))
+- Image: `ollama/ollama:0.33.2` (pinned; bumped weekly by CI — see [Auto-updates](auto-updates.md))
 - Port: `11434` (host and container)
 - Volume: `ollama_data` persists model weights across restarts
 - GPU: `gpus: all` with `NVIDIA_VISIBLE_DEVICES=all`

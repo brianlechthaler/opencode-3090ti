@@ -10,7 +10,7 @@ Keeps the host on the latest repo stack and the latest stable Ollama image.
 2. Opens a PR that bumps `docker-compose.yml` (and docs) when a newer release exists
 3. Labels the PR `automerge` so CI can squash-merge it after checks pass
 
-Pinned image today: `ollama/ollama:0.32.15`
+Pinned image today: `ollama/ollama:0.33.2`
 
 Manual check:
 
